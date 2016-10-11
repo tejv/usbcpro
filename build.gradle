@@ -1,0 +1,168 @@
+import org.apache.tools.ant.taskdefs.condition.Os
+
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'application'
+
+mainClassName = "org.ykc.usbcpro.USBCPro"
+
+def maj_ver
+def min_ver
+def build_no
+def versionPropsFile
+def Properties versionProps
+
+repositories {
+    mavenCentral()
+    maven{
+    	url "https://github.com/tejv/maven-repo/raw/releases"
+    }
+}
+
+
+dependencies {
+    if (Os.isFamily(Os.FAMILY_WINDOWS))
+    {
+		compile 'org.ykc:usbmanager-win:1.0.0'
+		compile 'org.ykc:generic_utils-win:1.0.0'
+	}
+	else
+	{
+		compile 'org.ykc:usbmanager-linux:1.0.0'
+		compile 'org.ykc:generic_utils-linux:1.0.0'
+	}
+}
+
+
+build{
+
+ 	versionPropsFile = file('version.properties')
+
+    if (versionPropsFile.canRead()) {
+        versionProps = new Properties()
+
+        versionProps.load(new FileInputStream(versionPropsFile))
+        maj_ver = versionProps['MAJOR_VERSION'].toInteger()
+		min_ver = versionProps['MINOR_VERSION'].toInteger()
+		build_no = versionProps['BUILD_NO'].toInteger()
+
+        def runTasks = gradle.startParameter.taskNames
+        if ('major_release' in runTasks) {
+            min_ver = 0
+            build_no = 0
+            maj_ver = maj_ver + 1
+        }
+        else if('major_release_skip_ver_inc' in runTasks)
+        {
+        	min_ver = 0
+            build_no = 0
+        }
+        else if('minor_release' in runTasks)
+        {
+            min_ver = min_ver + 1
+            build_no = 0
+        }
+        else if('minor_release_skip_ver_inc' in runTasks)
+        {
+        	build_no = 0
+        }
+        else if('uploadArchives' in runTasks)
+        {
+        	//do_nothing
+        }
+        else
+        {
+        	build_no = build_no + 1
+        }
+
+        versionProps['MAJOR_VERSION']= maj_ver.toString()
+        versionProps['MINOR_VERSION']= min_ver.toString()
+        versionProps['BUILD_NO']= build_no.toString()
+        versionProps.store(versionPropsFile.newWriter(), null)
+
+		jar.version = "${maj_ver}.${min_ver}.${build_no}"
+	    if (Os.isFamily(Os.FAMILY_WINDOWS))
+	    {
+		    jar.baseName = "${project.name}-win"
+	    }
+	    else
+	    {
+	 	    jar.baseName = "${project.name}-linux"
+	    }
+    }
+    else {
+        throw new GradleException("Could not read version.properties!")
+	}
+
+}
+
+jar{
+	group 'build'
+
+	  manifest {
+	    attributes(
+	      "Class-Path": configurations.compile.collect { it.getName() }.join(' ')
+
+	      )
+	  }
+
+	from configurations.compile.collect {zipTree it}
+}
+
+task min_rel(type: Copy) {
+    from jar
+    into "release/${maj_ver}.0.0"
+}
+
+task maj_rel(type: Copy) {
+
+    from jar
+    into "release/${maj_ver}.${min_ver}.${build_no}"
+}
+
+
+/* Use only on release */
+task minor_release() {
+    description "Generates output jar in release folder with auto increment of minor version"
+    group 'build'
+    dependsOn = ['min_rel']
+}
+
+task minor_release_skip_ver_inc() {
+    description "Generates output jar in release folder with no increment of minor version"
+    group 'build'
+    dependsOn = ['min_rel']
+}
+
+task major_release() {
+    description "Generates output jar in release folder with auto increment of major version"
+    group 'build'
+	dependsOn = ['maj_rel']
+}
+
+task major_release_skip_ver_inc() {
+    description "Generates output jar in release folder with no increment of major version"
+    group 'build'
+	dependsOn = ['maj_rel']
+}
+
+
+// Deploy to local maven-repo. If want to put on github push as a seprate step.
+// Path of local maven-repo needs to be specified in gradle.properties file and changed
+//   as per machine.
+uploadArchives {
+
+    repositories.mavenDeployer {
+
+		repository(url: LOCAL_MAVEN_REPO_PATH)
+        uniqueVersion = false
+
+        pom.project {
+            groupId = 'org.ykc'
+            version = jar.version
+            artifactId = 'usbcpro'
+            packaging = 'jar'
+        }
+    }
+}
+
