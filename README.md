@@ -1,5 +1,4 @@
-# usbcpro
-USBPD USBC Protocol Analyzer GUI
+# USBPD/USBC Protocol Analyzer GUI
 
 ![selection_002](https://cloud.githubusercontent.com/assets/22388206/19316287/786e1b62-90be-11e6-9669-a4b8badd5d12.png)
 
@@ -24,7 +23,8 @@ where 04b4 is the vendor id, 0072 is product id of usb device.
 
 Make sure device driver used is libusb. If not uninstall current driver and install libusb.
 
-->Build 
+->Build
+
 Clone the project and use gradle to build the project or can also import project in eclipse.
 Or use prebuilt binaries in my maven-repo.
 
@@ -48,7 +48,6 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
---------------------------------------------------------------------------------
 
 -------------------------------------------------------------------------------
 Overview
