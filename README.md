@@ -106,6 +106,7 @@ A. Attach/Detach
 	
 B. This version also supports logging data for a long time. Old data will be automatically cleared.
    You will be able to see last 4000 messages. By default this feature is enabled. To disable/enable long logging. Go to View->Long Logging.	
+   
 --------------------------------------------------------------------------------
 HW Triggers Description
 --------------------------------------------------------------------------------
