@@ -291,7 +291,7 @@ public class USBCPro implements USBManListener{
 	@SuppressWarnings({ "serial", "rawtypes" })
 	private void initialize() {
 		frmUsbcproPdAnalyzer = new JFrame();
-		//frmUsbcproPdAnalyzer.setIconImage(Toolkit.getDefaultToolkit().getImage(USBCPro.class.getResource("icons/1459622839_arrow_right.ico_128x128.png")));
+		frmUsbcproPdAnalyzer.setIconImage(Toolkit.getDefaultToolkit().getImage(USBCPro.class.getResource("/1459622839_arrow_right.ico_128x128.png")));
 		frmUsbcproPdAnalyzer.setTitle("USBCPro PD Analyzer");
 		frmUsbcproPdAnalyzer.setBounds(100, 100, 1185, 724);
 		frmUsbcproPdAnalyzer.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

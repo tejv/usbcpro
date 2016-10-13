@@ -99,12 +99,21 @@ build{
 jar{
 	group 'build'
 
-	  manifest {
+    // This file is needed for usbmanager to work
+	from('src/main/java') {
+	   include 'javax.usb.properties'
+	}
+	from('resources') {
+	   include '*.*'
+	}
+
+	manifest {
 	    attributes(
-	      "Class-Path": configurations.compile.collect { it.getName() }.join(' ')
+				'Class-Path': configurations.compile.collect { it.getName() }.join(' '),
+      			'Main-Class': 'org.ykc.usbcpro.USBCPro'
 
 	      )
-	  }
+	}
 
 	from configurations.compile.collect {zipTree it}
 }
