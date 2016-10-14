@@ -15,28 +15,22 @@ def Properties versionProps
 repositories {
     mavenCentral()
     maven{
-    	url "https://github.com/tejv/maven-repo/raw/releases"
+    	url "https://github.com/tejv/maven-repo/raw/master"
     }
 }
 
 
 dependencies {
-    if (Os.isFamily(Os.FAMILY_WINDOWS))
-    {
-		compile 'org.ykc:usbmanager-win:1.0.0'
-		compile 'org.ykc:generic_utils-win:1.0.0'
-	}
-	else
-	{
-		compile 'org.ykc:usbmanager-linux:1.0.0'
-		compile 'org.ykc:generic_utils-linux:1.0.0'
-	}
+
+	compile 'org.ykc:usbmanager:1.0.0'
+	compile 'org.ykc:generic_utils:1.0.0'
+
 }
 
 
 build{
 
- 	versionPropsFile = file('version.properties')
+ 	versionPropsFile = file('resources/version.properties')
 
     if (versionPropsFile.canRead()) {
         versionProps = new Properties()
@@ -81,14 +75,7 @@ build{
         versionProps.store(versionPropsFile.newWriter(), null)
 
 		jar.version = "${maj_ver}.${min_ver}.${build_no}"
-	    if (Os.isFamily(Os.FAMILY_WINDOWS))
-	    {
-		    jar.baseName = "${project.name}-win"
-	    }
-	    else
-	    {
-	 	    jar.baseName = "${project.name}-linux"
-	    }
+
     }
     else {
         throw new GradleException("Could not read version.properties!")

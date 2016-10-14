@@ -44,11 +44,14 @@ import javax.swing.table.TableRowSorter;
 import javax.swing.text.DefaultCaret;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Properties;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
@@ -429,7 +432,18 @@ public class USBCPro implements USBManListener{
 		JMenuItem mntmAbout = new JMenuItem("About");
 		mntmAbout.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				JOptionPane.showMessageDialog(frmUsbcproPdAnalyzer, "USBCPro v2.0.0.0\nAuthor: Tejender Sheoran\nEmail: tejendersheoran@gmail.com \nCopyright(C) (2016) Tejender Sheoran\nThis program is free software:\nYou can redistribute it and/or modify it under the terms of the\nGNU General Public License Ver 3<http://www.gnu.org/licenses/>","About Me",
+				Properties prop = new Properties();
+				InputStream input;
+				try {
+					input = USBCPro.class.getResource("/version.properties").openStream();
+					prop.load(input);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+				JOptionPane.showMessageDialog(frmUsbcproPdAnalyzer, "USBCPro v"+ prop.getProperty("MAJOR_VERSION") + "."+ prop.getProperty("MINOR_VERSION") + "." + prop.getProperty("BUILD_NO") +
+				"\nAuthor: Tejender Sheoran\nEmail: tejendersheoran@gmail.com \nCopyright(C) (2016) Tejender Sheoran\nThis program is free software:\nYou can redistribute it and/or modify it under the terms of the\nGNU General Public License Ver 3\n<http://www.gnu.org/licenses/>","About Me",
 					    JOptionPane.INFORMATION_MESSAGE);
 			}
 		});
@@ -451,7 +465,6 @@ public class USBCPro implements USBManListener{
 					txtrLog.append("Device Selection changed to " + dev.toString() + "\n");
 					ccDataTask.setDevice(dev);
 					txtrLog.append("USBCPro HW Attached \n");
-					txtrLog.append("Please make sure to use libusb drivers otherwise further communication with device will fail. \n");
 					isAttached = true;
 
 				}
@@ -786,6 +799,9 @@ public class USBCPro implements USBManListener{
 		else
 		{
 			txtrLog.append("Start Command Fail \n");
+			txtrLog.append(" For Windows -> Please make sure to use libusb drivers otherwise further communication with device will fail. \n");
+			txtrLog.append(" For Linux -> Please make sure USB device has read/write permissions. \n");
+			txtrLog.append(" For more details refer to readme file at https://github.com/tejv/usbcpro/blob/master/README.md \n");
 		}
 	}
 
@@ -813,6 +829,9 @@ public class USBCPro implements USBManListener{
 				else
 				{
 					txtrLog.append("Stop Command Fail \n");
+					txtrLog.append(" For Windows -> Please make sure to use libusb drivers otherwise further communication with device will fail. \n");
+					txtrLog.append(" For Linux -> Please make sure USB device has read/write permissions. \n");
+					txtrLog.append(" For more details refer to readme file at https://github.com/tejv/usbcpro/blob/master/README.md \n");
 				}
 				break;
 			}
