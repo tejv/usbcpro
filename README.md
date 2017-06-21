@@ -1,3 +1,4 @@
+# No longer supported Use USBCx project instead
 # USBPD/USBC Protocol Analyzer GUI
 
 ![selection_002](https://cloud.githubusercontent.com/assets/22388206/19316287/786e1b62-90be-11e6-9669-a4b8badd5d12.png)
